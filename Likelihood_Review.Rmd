@@ -4,14 +4,6 @@ author: "Andrea Havron<br>NOAA Fisheries, OST"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-options(htmltools.dir.version = FALSE)
-library(mvtnorm)
-library(plotly)
-#remotes::install_github("AckerDWM/gg3D")
-library(gg3D)
-```
-
 # ML Inference
 
 What is the likelihood of getting heads 30 times in 100 coin flips?
@@ -83,16 +75,16 @@ $\hat{p} = \frac{30}{100} = 0.3$
 \begin{align}
 &-\frac{y}{p^2} - \frac{(n-y)}{(1-p)^2}\\
 &-\frac{np}{p^2} - \frac{(n-np)}{(1-p)^2}\\
-&-\frac{n}{p} - \frac{n(1-p)}{1-p}\\
+&-\frac{n}{p} - \frac{n}{1-p}\\
 l''(p) &= -\frac{n(1-p)}{p}\\
-Var[p] &= \frac{p}{n(1-p)}\\
+Var[p] &= \frac{p(1-p)}{n}\\
 \end{align}
 
 <br>
 
 \begin{align}
 Var[p] &\approx -\frac{1}{l''(p)}\\
-SE[p] &\approx \sqrt{ \frac{.3}{100(.7)}} \approx 0.065\\
+SE[p] &\approx \sqrt{ \frac{(.3)(.7)}{100}} \approx 0.00458\\
 \end{align}
 
 <br>
@@ -101,7 +93,7 @@ SE[p] &\approx \sqrt{ \frac{.3}{100(.7)}} \approx 0.065\\
 curve(-log(dbinom(30,100,x)),0,0.75, ylab = 'l(p)', xlab = 'p')
 nll <- -dbinom(30,100,.3,TRUE)
 points(0.3, nll, col = 'red')
-confint <- .3 + c(-1,1)*2*sqrt(.3/70)
+confint <- .3 + c(-1,1)*qnorm(.975)*sqrt(.3*.7/100)
 segments(confint[1], -log(dbinom(30,100,confint[1])), confint[1], 100, col='red', lwd=2)
 segments(confint[2], -log(dbinom(30,100,confint[2])), confint[2], 100, col='red', lwd=2)
 text(.3, 20, "95% confint", col='red', cex = 2)
