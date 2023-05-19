@@ -1,0 +1,108 @@
+---
+title:  "A review of statistical computing with TMB"
+author: "Andrea Havron<br>NOAA Fisheries, OST"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(mvtnorm)
+library(plotly)
+#remotes::install_github("AckerDWM/gg3D")
+library(gg3D)
+```
+
+# ML Inference
+
+What is the likelihood of getting heads 30 times in 100 coin flips?
+
+
+1. Specify the model <br><br>
+$y ~ \sim Binomial(n, p)$
+
+
+2. Calculate the likelihood<br><br>
+$L(p; n, y) = \frac{n!}{y!(n-y)!}p^y(1-p)^{n-y}$
+
+<br>
+$L(p; n = 100, y = 30)$
+```{r, eval=TRUE, out.width = '80%', echo = FALSE}
+curve(dbinom(30,100,x),0,0.75, ylab = 'L(p)', xlab = 'p')
+```
+
+
+3. Calculate the negative log-likelihood<br><br>
+
+$-\ell(p; n, y) = -[ln\big(\frac{n!}{y!(n-y)!}\big) + yln(p) + (n-y)ln(1-p)]$
+
+<br>
+
+$-ln\big[L(p; n = 100, y = 30)\big]$
+```{r, eval=TRUE, out.width = '80%', echo = FALSE}
+curve(-log(dbinom(30,100,x)),0,0.75, ylab = 'l(p)', xlab = 'p')
+```
+
+4. Calculate the derivative w.r.t. $p$<br><br>
+$\frac{d(\ell(p; n, y))}{dp} = \frac{y}{p}- \frac{n-y}{1-p}$
+
+<br>
+
+$-ln\big[L(p; n = 100, y = 30)\big]$
+
+```{r, eval=TRUE, out.width = '80%', echo = FALSE}
+curve(-log(dbinom(30,100,x)),0,0.75, ylab = 'l(p)', xlab = 'p')
+```
+
+5. Set to 0 and solve for MLE<br>
+\begin{align}
+0 &= \frac{y}{p}- \frac{n-y}{1-p}\\
+E[p] &= \frac{y}{n}\\
+E[y] &= np
+\end{align}
+
+<br>
+
+$-ln\big[L(p; N = 100, y = 30)\big]$
+
+<br>
+
+```{r, eval=TRUE, out.width = '70%', echo = FALSE}
+curve(-log(dbinom(30,100,x)),0,0.75, ylab = 'l(p)', xlab = 'p')
+nll <- -dbinom(30,100,.3,TRUE)
+segments(0.1, nll, 0.5, nll, col='red', lwd=2)
+```
+
+<br>
+
+$\hat{p} = \frac{30}{100} = 0.3$
+
+<br>
+
+6. Approximate Var[p] using the second derivative<br>
+
+\begin{align}
+&-\frac{y}{p^2} - \frac{(n-y)}{(1-p)^2}\\
+&-\frac{np}{p^2} - \frac{(n-np)}{(1-p)^2}\\
+&-\frac{n}{p} - \frac{n(1-p)}{1-p}\\
+l''(p) &= -\frac{n(1-p)}{p}\\
+Var[p] &= \frac{p}{n(1-p)}\\
+\end{align}
+
+<br>
+
+\begin{align}
+Var[p] &\approx -\frac{1}{l''(p)}\\
+SE[p] &\approx \sqrt{ \frac{.3}{100(.7)}} \approx 0.065\\
+\end{align}
+
+<br>
+
+```{r, eval=TRUE, out.width = '70%', echo = FALSE}
+curve(-log(dbinom(30,100,x)),0,0.75, ylab = 'l(p)', xlab = 'p')
+nll <- -dbinom(30,100,.3,TRUE)
+points(0.3, nll, col = 'red')
+confint <- .3 + c(-1,1)*2*sqrt(.3/70)
+segments(confint[1], -log(dbinom(30,100,confint[1])), confint[1], 100, col='red', lwd=2)
+segments(confint[2], -log(dbinom(30,100,confint[2])), confint[2], 100, col='red', lwd=2)
+text(.3, 20, "95% confint", col='red', cex = 2)
+```
