@@ -1,0 +1,23 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# FishStats
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+A collection of statistics materials for fish people
+
+## MLE Inference
+
+ - [Likelihood Review](https://andrea-havron-noaa.github.io/FishStats/docs/Likelihood_Review.html)
