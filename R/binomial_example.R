@@ -3,11 +3,11 @@ curve(dbinom(30,100,x),0,0.75, ylab = 'L(p)', xlab = 'p')
 y <- rbinom(n = 100, size = 100, prob = .3)
 
 mod <- function(theta) {
-   -sum(dbinom(x = y, size = 100, prob = p, log = TRUE))
+   -sum(dbinom(x = y, size = 100, prob = theta, log = TRUE))
 }
 
 # find theta
-opt <- optim(par = 0, fn = mod, hessian = TRUE)
+opt <- optim(par = 0.5, fn = mod, hessian = TRUE, method = "Brent")
 # get confidence intervals
 var.est <- 1/opt$hessian #estimated variance is the inverse of hessian
 sqrt(var.est) #standard error (se): matches value from Likelihood Review
@@ -17,6 +17,6 @@ c(lower.limit, upper.limit)
 
 # parameter transformations
 mod <- function(theta) {
-    p <- 1/(1+exp(-theta)) # logit transformation
+    p <- 1/(1+exp(-theta)) # inv logit transformation
    -sum(dbinom(x = y, size = 100, prob = p, log = TRUE))
 }

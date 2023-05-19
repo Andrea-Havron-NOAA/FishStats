@@ -98,3 +98,61 @@ segments(confint[1], -log(dbinom(30,100,confint[1])), confint[1], 100, col='red'
 segments(confint[2], -log(dbinom(30,100,confint[2])), confint[2], 100, col='red', lwd=2)
 text(.3, 20, "95% confint", col='red', cex = 2)
 ```
+
+## Binomial Coding Example
+Example based on [R/binomial_example.R](https://github.com/Andrea-Havron-NOAA/FishStats/R/binomial_example.R)
+
+Simulate Data
+```{r}
+# get 100 obs
+y <- rbinom(n = 100, size = 100, prob = .3)
+```
+
+Create Model
+```{r}
+mod <- function(theta) {
+   -sum(dbinom(x = y, size = 100, prob = theta, log = TRUE))
+}
+```
+
+
+Estimate theta
+```{r}
+opt <- optim(par = 0.5, fn = mod, 
+             hessian = TRUE, 
+             lower = 0.001, upper = 0.999,
+             method = "Brent")
+```
+
+Get confidence intervals
+```{r}
+var.est <- 1/opt$hessian #estimated variance is the inverse of hessian
+sqrt(var.est) #standard error (se): matches value from Likelihood Review
+upper.limit <- opt$par + qnorm(.975)*sqrt(var.est) #calculates 95% confidence interval
+lower.limit <- opt$par - qnorm(.975)*sqrt(var.est) #calculates 95% confidence interval
+c(lower.limit, upper.limit)
+```
+
+Plot likelihood with confidence intervals
+```{r}
+curve(dbinom(30,100,x),0,0.75, ylab = 'L(p)', xlab = 'p')
+conf.int <- c(lower.limit, upper.limit)
+segments(confint[1], dbinom(30,100,confint[1]), confint[1], 0, col='red', lwd=2)
+segments(confint[2], dbinom(30,100,confint[2]), confint[2], 0, col='red', lwd=2)
+text(.3, .02, "95% confint", col='red')
+```
+
+Compare with lm
+```{r}
+mod <- lm(y/100~1)
+summary(mod)
+```
+
+Parameter transformations
+```{r}
+mod <- function(theta) {
+    p <- 1/(1+exp(-theta)) # inverse logit transformation
+   -sum(dbinom(x = y, size = 100, prob = p, log = TRUE))
+}
+```
+
