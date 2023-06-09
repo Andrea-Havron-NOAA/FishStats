@@ -1,0 +1,105 @@
+---
+title: "Asymptotic Normality"
+author: "Andrea Havron"
+date: "2023-06-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+### Binomial log-likelihood<br><br>
+$\ell(\theta; n, y) = \frac{n!}{y!(n-y)!}\theta^y(1-\theta)^{n-y}$
+
+<br>
+$\ell(\theta; n = 100, y = 30)$
+
+
+```{r, eval=TRUE, out.width = '60%', echo = FALSE}
+curve(dbinom(30,100,x, TRUE),0,0.75, ylab = expression("l("~theta~ "; n, y)"), xlab = expression(theta))
+ll=dbinom(30,100,.3,TRUE) 
+segments(0.1, ll, 0.5, ll, col='red', lwd=2)
+
+```
+
+**Expectation of score function is 0**
+
+Score Function: $\frac{d\ell(\theta;y)}{d\theta}$
+
+$E[\frac{d\ell(\theta;y)}{d\theta}] = 0$
+
+
+**Definition of Variance**
+
+$$Var[X] = (E[X]^2 - E[X^2])$$
+**Variance of the derivative:**
+\begin{align}
+Var[\frac{d\ell(\theta;y)}{d\theta}] &= (E[\frac{d\ell(\theta;y)}{d\theta}]^2 - E[\frac{d\ell(\theta;y)}{d\theta}^2])\\
+&= 0 - E[\frac{d\ell(\theta;y)}{d\theta}^2]\\
+&= -E[\frac{d^2\ell(\theta;y)}{d\theta^2}]
+\end{align}
+
+### Central Limit Theorem
+
+If $y_1$, $y_2$, ... are *iid* with finite mean and variance, $\mu$ and $\sigma^2$, and $\bar{y}_n$ is the mean, then:
+
+$$\sqrt{n}(\bar{y}_{n}-\mu) \rightarrow_{D} N(0, \sigma^{2})$$
+
+### Asymptotic Normality of the MLE, $\hat{\theta}_{n}$
+
+Taylor Series Expansion around the score function, $\frac{d\ell(\theta;y)}{d\theta}$, where $\theta_{0}$ is the true parameter:
+
+\begin{align}
+0 &= \ell'(\hat{\theta}_{n})\\
+&= \ell'(\theta_{0}) + (\hat{\theta}_{n} - \theta_{0})\ell'' + 0.5(\hat{\theta}_{n} - \theta_{0})^{2}\ell'''(\theta_{n})\\
+&\\
+\sqrt{n}(\hat{\theta}_{n} - \theta_{0}) &= \frac{\sqrt{n}\ell'(\theta_{0})}{-(1/n)\ell''(\theta_{0})} \\
+\end{align}
+
+$$\frac{1}{\sqrt{n}}\ell'(\theta_{0}) \rightarrow_{D} N(0, \ell''(\theta_{0}))$$
+
+
+$$-\frac{1}{n}\ell''(\theta_{0}) \rightarrow_{p} -\ell''(\theta_{0})$$
+
+$$\sqrt{n}(\bar{y}_{n}-\mu) \rightarrow_{D} N(0, \frac{1}{-\ell''(\theta_{0})})$$
+
+### Geometric Example:
+
+
+* The second derivative measures the curvature of the likelihood surface
+* For models with N parameters, the curvature is represented by an NxN **Hessian** matrix of 2nd partial derivatives
+* Inverting the negative Hessian gives us a covariance matrix
+
+
+\begin{align}
+(\mathbb{H}_{f})_{i,j} &= \frac{\partial^2f}{\partial \theta_{i}, \partial x\theta_{j}} = \frac{-1}{Var(\Theta)}
+\end{align}
+<br>
+[**What causes a singular covariance matrix?**](https://andrea-havron.shinyapps.io/mvnplot/)
+
+
+```{r mvnorm, out.width = '80%', echo=FALSE, warning = FALSE, message=FALSE}
+
+  cor2cov <- function(R,sd2){
+    S <- c(sd2, sd2)
+    diag(S) %*% R %*% diag(S)
+  }
+
+  C <- cbind(c(1, .4), c(.4, 1))
+  Sigma <- cor2cov(C, 1)
+  
+  x <- seq(-3, 3,  .5)
+    y <- x
+    z <- matrix(0,length(x),length(y))
+    for(i in 1:length(x)){
+      for(j in 1:length(y)){
+        z[i,j] <- mvtnorm::dmvnorm(c(x[i],y[j]), sigma = Sigma)
+      }
+    }
+  persp(x, y, -log(z), zlim = range(0,12))
+
+```
+
+
