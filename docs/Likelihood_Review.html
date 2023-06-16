@@ -437,11 +437,11 @@ y &lt;- rbinom(n = 100, size = 100, prob = .3)</code></pre>
 <pre class="r"><code>var.est &lt;- 1/opt$hessian #estimated variance is the inverse of hessian
 sqrt(var.est) #standard error (se): matches value from Likelihood Review</code></pre>
 <pre><code>##             [,1]
-## [1,] 0.004588189</code></pre>
+## [1,] 0.004595086</code></pre>
 <pre class="r"><code>upper.limit &lt;- opt$par + qnorm(.975)*sqrt(var.est) #calculates 95% confidence interval
 lower.limit &lt;- opt$par - qnorm(.975)*sqrt(var.est) #calculates 95% confidence interval
 c(lower.limit, upper.limit)</code></pre>
-<pre><code>## [1] 0.2923073 0.3102927</code></pre>
+<pre><code>## [1] 0.2938938 0.3119062</code></pre>
 <p>Plot likelihood with confidence intervals</p>
 <pre class="r"><code>curve(dbinom(30,100,x),0,0.75, ylab = &#39;L(p)&#39;, xlab = &#39;p&#39;)
 conf.int &lt;- c(lower.limit, upper.limit)
@@ -458,15 +458,15 @@ summary(mod)</code></pre>
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -0.1013 -0.0313 -0.0013  0.0287  0.1287 
+## -0.1029 -0.0329  0.0071  0.0371  0.1471 
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 0.301300   0.004512   66.78   &lt;2e-16 ***
+## (Intercept) 0.302900   0.004582   66.11   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.04512 on 99 degrees of freedom</code></pre>
+## Residual standard error: 0.04582 on 99 degrees of freedom</code></pre>
 <p>Parameter transformations</p>
 <pre class="r"><code>mod &lt;- function(theta) {
     p &lt;- 1/(1+exp(-theta)) # inverse logit transformation
