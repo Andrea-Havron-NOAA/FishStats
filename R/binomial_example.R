@@ -7,11 +7,13 @@ curve(dbinom(30,100,x),0,0.75, ylab = 'L(p)', xlab = 'p')
 set.seed(123)
 y <- rbinom(n = 100, size = 100, prob = .3)
 
+# model
 mod <- function(theta) {
    -sum(dbinom(x = y, size = 100, prob = theta, log = TRUE))
 }
 
 # find theta (use Brent, the preferred method when fitting a single parameter)
+# optim is a minimizer
 opt <- optim(par = 0.5, fn = mod, hessian = TRUE, method = "Brent", 
              lower = 0, upper = 1)
 
@@ -45,6 +47,7 @@ mle_ll <- -mod(opt$par)
 lr <- mle_ll - prof_loglike
 
 # Want to hone in on where the difference is 1.92 (for a 95% CI)
+# 1.92 comes from the chi squared distribution
 upper.limit.plike <- max(phat[lr<1.92])
 lower.limit.plike <- min(phat[lr<1.92])
 proflike.ci <- c(lower.limit.plike, upper.limit.plike)
@@ -68,7 +71,7 @@ prof_loglike2 <- rep(0, length(phat))
 for(i in seq_along(phat)){
   prof_loglike2[i] = -mod(phat[i])
 }
-plot(phat, prof_loglike2, ylim = c(-10,-1), xlim = c(0, .25))
+plot(phat, prof_loglike2, ylim = c(-10,-1), xlim = c(0, .25)) # this likelihood curve isn't symmetrical
 lr2 <- -mod(opt2$par) - prof_loglike2
 upper.limit.plike2 <- max(phat[lr2<1.92])
 lower.limit.plike2 <- min(phat[lr2<1.92])
