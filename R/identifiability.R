@@ -66,7 +66,7 @@ plot(est.group.mean, group.mean);abline(0,1)
 df.est
 
 
-# model
+# model with sum to zero constraints
 #' @param theta a vector
 mod_sum_to_zero <- function(theta) {
   y <- df$y
@@ -85,10 +85,18 @@ mod_sum_to_zero <- function(theta) {
   return(nll)
 }
 
+# optimize the model
 init.par <- c(rep(1, 5), 0)
 opt <- nlminb(init.par, mod_sum_to_zero)
+# See the results
 est.beta <- opt$par[2:5]
 est.beta[5] <- 0 - sum(est.beta)
 opt$par[1]; true.par[1]
 cbind(est.beta, true.par[2:6])
 opt$par[6]; true.par[7]
+
+# may be able to sum to zero by getting the last dev by subtracting from the mean instead
+
+# there is no easy way to know that your model is not identifiable, you have to
+# think through the logic of the model or perhaps use diagnostics (e.g., flat 
+# likelihood profiles might tell you your model is not identifiable)
