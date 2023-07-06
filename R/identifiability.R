@@ -95,8 +95,29 @@ opt$par[1]; true.par[1]
 cbind(est.beta, true.par[2:6])
 opt$par[6]; true.par[7]
 
-# may be able to sum to zero by getting the last dev by subtracting from the mean instead
+# may be able to sum to zero by subtracting from the mean instead
 
-# there is no easy way to know that your model is not identifiable, you have to
-# think through the logic of the model or perhaps use diagnostics (e.g., flat 
-# likelihood profiles might tell you your model is not identifiable)
+# model with sum to zero constraints (subtracting mean approach)
+#' @param theta a vector
+mod_sum2zero_subtractmean <- function(theta) {
+    y <- df$y
+    grp.id <- df$group
+    # beta are the effect terms
+    beta0 <- theta[1]
+    beta <- theta[2:6] - mean(theta[2:6])# devation term
+    sd <- exp(theta[7])
+    
+    nll <- 0
+    for(i in 1:length(y)){
+        group_mean <- beta0 + beta[grp.id[i]]
+        nll = nll - dnorm(y[i], group_mean, sd, TRUE)
+    }
+    return(nll)
+}
+
+# nlminb() is an alternative to optim()
+init.par <- c(rep(1, 6), 0)
+opt_subtractmean <- nlminb(init.par, mod_sum2zero_subtractmean)
+
+# See the results
+cbind(c(opt$par, NA), opt_subtractmean$par, true.par)
