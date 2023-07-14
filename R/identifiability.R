@@ -64,6 +64,7 @@ ggplot() +
 
 plot(est.group.mean, group.mean);abline(0,1)
 df.est
+cbind(est.group.mean, group.mean)
 
 
 # model with sum to zero constraints
