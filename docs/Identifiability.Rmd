@@ -1,0 +1,44 @@
+---
+title:  "Identifiability"
+author: "Andrea Havron<br>NOAA Fisheries, OST"
+output: html_document
+---
+
+
+# Anova Model
+$\mu_{i} = \beta_{0} + \alpha_{i}, i = 1,..p$, for p groups (levels)
+
+mu = local mean
+beta0 = global mean
+Xbetas = local deviations
+ 
+ matrix notation
+$\mu = \beta_{0} + X\beta$
+X is a design matrix and betas are local deviations from group mean
+
+$y \sim N(\mu, \sigma)$
+
+# Design Matrix X
+For 3 groups and 5 observations of data, $y$
+Two observations from group 1, two oberservations from group 2, one observation from group 3
+
+$\beta = [\beta_[1], \beta_{2}, \beta_{3}]$
+$$
+X = \begin{bmatrix}
+1 & 0 & 0 \\
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1
+\end{bmatrix}
+$$
+
+$dat = list(y = c(y_{1},y_{2},y_{3},y_{4},y_{5}), group = c(1,1,2,2,3))$
+$par = list(\beta_{0},\beta = c(\beta_{1},\beta_{2},\beta_{3}))$
+for(i in 1:3){
+$mu = \beta_{0} + \beta[group[i]]$
+}
+
+$$
+X\beta = [\beta_{1}, \beta_{1}, \beta_{2}, \beta_{2}, \beta_{3}]
+$$
