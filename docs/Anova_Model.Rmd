@@ -1,0 +1,72 @@
+---
+title:  "Anova Model"
+author: "Andrea Havron<br>NOAA Fisheries, OST"
+output: html_document
+---
+
+## Mathematical Notation of the Anova Model:
+$\mu_{i} = \beta_{0} + \alpha_{i}, i = 1,..p$, for p groups (levels)
+<br>
+ 
+## Matrix notation
+$\mu = \beta_{0} + X\beta$ <br>
+
+$\mu$: local mean <br>
+$\beta_{0}$: global mean<br>
+$X\beta$: local deviations<br>
+
+X is a design matrix and betas are local deviations from group mean <br>
+
+$y \sim N(\mu, \sigma)$
+
+### Design Matrix X
+For 3 groups and 5 observations of data, $y$
+Two observations from group 1, two observations from group 2, one observation from group 3
+<br>
+$$
+X = \begin{bmatrix}
+1 & 0 & 0 \\
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1
+\end{bmatrix}, 
+\beta = \begin{bmatrix}
+\beta_{1} \\ \beta_{2} \\ \beta_{3}
+\end{bmatrix}
+$$
+The model can then be written as:
+\begin{align}
+\mu &= \begin{bmatrix}
+1 & 0 & 0 \\
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1
+\end{bmatrix}\begin{bmatrix}
+\beta_{1} \\ \beta_{2} \\ \beta_{3}
+\end{bmatrix} \\
+&= \begin{bmatrix}
+\beta_{1} \\ \beta_{1} \\ \beta_{2} \\ \beta_{2} \\ \beta_{3}
+\end{bmatrix} \\
+\begin{bmatrix}
+y_{1} \\ y_{2} \\ y_{3} \\ y_{4} \\ y_{5}
+\end{bmatrix} &\sim Normal\Bigg( \begin{bmatrix}
+\beta_{0} +\beta_{1} \\ \beta_{0} +\beta_{1} \\ 
+\beta_{0} +\beta_{2} \\ \beta_{0} +\beta_{2} \\\beta_{0} + \beta_{3}
+\end{bmatrix} , \sigma^{2}\Bigg)
+\end{align}
+
+### Unique ID Method 
+```{r}
+beta0 <- 2
+group <- c(1,1,2,2,3)
+beta <- c(1,-1,-.5)
+mu <- rep(0,5)
+for(i in 1:5){
+  mu[i] = beta0 + beta[group[i]]
+}
+mu #local means
+```
+}
+

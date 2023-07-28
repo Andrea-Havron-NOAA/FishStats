@@ -12,7 +12,7 @@
 <meta name="author" content="Andrea Havron NOAA Fisheries, OST" />
 
 
-<title>Identifiability</title>
+<title>Anova Model</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -349,42 +349,73 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Identifiability</h1>
+<h1 class="title toc-ignore">Anova Model</h1>
 <h4 class="author">Andrea Havron<br>NOAA Fisheries, OST</h4>
 
 </div>
 
 
-<div id="anova-model" class="section level1">
-<h1>Anova Model</h1>
+<div id="mathematical-notation-of-the-anova-model" class="section level2">
+<h2>Mathematical Notation of the Anova Model:</h2>
 <p><span class="math inline">\(\mu_{i} = \beta_{0} + \alpha_{i}, i =
-1,..p\)</span>, for p groups (levels)</p>
-<p>mu = local mean beta0 = global mean Xbetas = local deviations</p>
-<p>matrix notation <span class="math inline">\(\mu = \beta_{0} +
-X\beta\)</span> X is a design matrix and betas are local deviations from
-group mean</p>
-<p><span class="math inline">\(y \sim N(\mu, \sigma)\)</span></p>
+1,..p\)</span>, for p groups (levels) <br></p>
 </div>
-<div id="design-matrix-x" class="section level1">
-<h1>Design Matrix X</h1>
+<div id="matrix-notation" class="section level2">
+<h2>Matrix notation</h2>
+<p><span class="math inline">\(\mu = \beta_{0} + X\beta\)</span>
+<br></p>
+<p><span class="math inline">\(\mu\)</span>: local mean <br> <span class="math inline">\(\beta_{0}\)</span>: global mean<br> <span class="math inline">\(X\beta\)</span>: local deviations<br></p>
+<p>X is a design matrix and betas are local deviations from group mean
+<br></p>
+<p><span class="math inline">\(y \sim N(\mu, \sigma)\)</span></p>
+<div id="design-matrix-x" class="section level3">
+<h3>Design Matrix X</h3>
 <p>For 3 groups and 5 observations of data, <span class="math inline">\(y\)</span> Two observations from group 1, two
-oberservations from group 2, one observation from group 3</p>
-<p><span class="math inline">\(\beta = [\beta_[1], \beta_{2},
-\beta_{3}]\)</span> <span class="math display">\[
+observations from group 2, one observation from group 3 <br> <span class="math display">\[
 X = \begin{bmatrix}
 1 &amp; 0 &amp; 0 \\
 1 &amp; 0 &amp; 0 \\
 0 &amp; 1 &amp; 0 \\
 0 &amp; 1 &amp; 0 \\
 0 &amp; 0 &amp; 1
+\end{bmatrix},
+\beta = \begin{bmatrix}
+\beta_{1} \\ \beta_{2} \\ \beta_{3}
 \end{bmatrix}
-\]</span></p>
-<p><span class="math inline">\(dat = list(y =
-c(y_{1},y_{2},y_{3},y_{4},y_{5}), group = c(1,1,2,2,3))\)</span> <span class="math inline">\(par = list(\beta_{0},\beta =
-c(\beta_{1},\beta_{2},\beta_{3}))\)</span> for(i in 1:3){ <span class="math inline">\(mu = \beta_{0} + \beta[group[i]]\)</span> }</p>
-<p><span class="math display">\[
-X\beta = [\beta_{1}, \beta_{1}, \beta_{2}, \beta_{2}, \beta_{3}]
-\]</span></p>
+\]</span> The model can then be written as: <span class="math display">\[\begin{align}
+\mu &amp;= \begin{bmatrix}
+1 &amp; 0 &amp; 0 \\
+1 &amp; 0 &amp; 0 \\
+0 &amp; 1 &amp; 0 \\
+0 &amp; 1 &amp; 0 \\
+0 &amp; 0 &amp; 1
+\end{bmatrix}\begin{bmatrix}
+\beta_{1} \\ \beta_{2} \\ \beta_{3}
+\end{bmatrix} \\
+&amp;= \begin{bmatrix}
+\beta_{1} \\ \beta_{1} \\ \beta_{2} \\ \beta_{2} \\ \beta_{3}
+\end{bmatrix} \\
+\begin{bmatrix}
+y_{1} \\ y_{2} \\ y_{3} \\ y_{4} \\ y_{5}
+\end{bmatrix} &amp;\sim Normal\Bigg( \begin{bmatrix}
+\beta_{0} +\beta_{1} \\ \beta_{0} +\beta_{1} \\
+\beta_{0} +\beta_{2} \\ \beta_{0} +\beta_{2} \\\beta_{0} + \beta_{3}
+\end{bmatrix} , \sigma^{2}\Bigg)
+\end{align}\]</span></p>
+</div>
+<div id="unique-id-method" class="section level3">
+<h3>Unique ID Method</h3>
+<pre class="r"><code>beta0 &lt;- 2
+group &lt;- c(1,1,2,2,3)
+beta &lt;- c(1,-1,-.5)
+mu &lt;- rep(0,5)
+for(i in 1:5){
+  mu[i] = beta0 + beta[group[i]]
+}
+mu #local means</code></pre>
+<pre><code>## [1] 3.0 3.0 1.0 1.0 1.5</code></pre>
+<p>}</p>
+</div>
 </div>
 
 
