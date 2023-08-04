@@ -1,9 +1,9 @@
-# Investigate identifiability of models, using anova as an example
+# Investigate identifiability of models, using anova as an example ---
 # e.g., y = x^2 is not identifiable, b/c x could be neg or pos.
 library(ggplot2)
 
 # Simulated data and classic example of an unidentifiable model - 
-# an anova example
+# an anova example -----
 n.obs <- 100
 n.groups <- 5
 set.seed(1)
@@ -67,7 +67,7 @@ df.est
 cbind(est.group.mean, group.mean)
 
 
-# model with sum to zero constraints
+# model with sum to zero constraints ----
 # don't estimate all beta terms because assuming beta terms will sum to zero
 # deviations around the mean are a normal distribution with a mean of zero
 # removing a df (removing a parameter in the model)
@@ -106,7 +106,7 @@ sum2zero.est <- c(opt$par[1], est.beta, opt$par[6])
 # hard to say under which circumstances which of the 2 methods performs
 # better.
 
-# model with sum to zero constraints (subtracting mean approach)
+# model with sum to zero constraints (subtracting mean approach) -----
 #' @param theta a vector (not the same as mod_sum_to_zero)
 mod_sum2zero_subtractmean <- function(theta) {
     y <- df$y
@@ -134,7 +134,7 @@ opt_subtractmean$par[7])
 # See the results
 cbind(sum2zero.est, subtractmean.est, true.par)
 
-# Compare to R anova
+# Compare to R anova ------
 # this method is using a "baseline constraint". Drops the group mean.
 # it is not estimating the global mean, only the group means.
 # only estimating one group mean, and the rest are deviations around the group mean.
