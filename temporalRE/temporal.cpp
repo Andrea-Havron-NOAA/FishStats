@@ -40,8 +40,8 @@ Type objective_function<Type>::operator() () {
     // Also an AR1 model because based on the previous observation
     // In State-Space Modeling, this is referred to as the "Process" Model
     // i++ is the same as i = i + 1
-    for(int i=1 i<n; i++){ // ++ means that we will iterate i by 1 and will stop right before we get to n (i<n)
-        Type expected_re_i = growth_rate * re[i-1]; // growth rate * previous re vector (time-step)
+    for(int i=1; i<n; i++){ // ++ means that we will iterate i by 1 and will stop right before we get to n (i<n)
+        Type expected_re_i = growth_rate * re[i-1]; // growth rate * previous re vector (time-step); growth rate is constant
         nll -= dnorm(re[i], expected_re_i, sigma_re, true); // likelihood for the random effect
     }
     
